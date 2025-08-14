@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Pro Converter - Complete PDF Solution</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- PDF.js for PDF operations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    
+    <!-- jsPDF for PDF creation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- JSZip for ZIP operations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- PDF-lib for advanced PDF operations -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <!-- Additional libraries for extended functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="navbar">
+                <div class="brand">
+                    <span class="logo">📄</span>
+                    <h1>PDF Pro Converter</h1>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" type="button">🌗 Theme</button>
+            </div>
+            <p>Complete PDF Solution - Convert, Compress, Merge & More - 100% Offline</p>
+        </header>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="pdf-to-images">PDF → Images</button>
+                <button class="tab-button" data-tab="images-to-pdf">Images → PDF</button>
+                <button class="tab-button" data-tab="compress-pdf">Compress PDF</button>
+                <button class="tab-button" data-tab="merge-pdf">Merge PDFs</button>
+                <button class="tab-button" data-tab="split-pdf">Split PDF</button>
+                <button class="tab-button" data-tab="rotate-pdf">Rotate PDF</button>
+                <button class="tab-button" data-tab="watermark-pdf">Watermark PDF</button>
+                <button class="tab-button" data-tab="pdf-to-word">PDF → Text</button>
+                <button class="tab-button" data-tab="crop-pdf">Crop PDF</button>
+                <button class="tab-button" data-tab="optimize-pdf">Optimize PDF</button>
+                <button class="tab-button" data-tab="pdf-table-extractor">PDF → Table</button>
+                <button class="tab-button" data-tab="pdf-to-pptx">PDF → PPTX</button>
+                <button class="tab-button" data-tab="pdf-redactor">PDF Redactor</button>
+                <button class="tab-button" data-tab="pdf-compare">PDF Compare</button>
+                <button class="tab-button" data-tab="pdf-to-audio">PDF → Audio</button>
+                <button class="tab-button" data-tab="pdf-form-filler">PDF Form Filler</button>
+                <button class="tab-button" data-tab="pdf-page-numbering">PDF Page Numbering</button>
+                <button class="tab-button" data-tab="pdf-to-html">PDF → HTML</button>
+            </div>
+        </div>
+
+        <!-- PDF to Images Tab -->
+    <div class="tab-content active" id="pdf-to-images" data-title="PDF → Images">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="pdf-input" accept=".pdf,application/pdf" />
+                    <label for="pdf-input" class="file-input-label">
+                        <span>📄 Choose PDF File</span>
+                    </label>
+                </div>
+                <div class="pdf-options">
+                    <div>
+                        <label for="img-format">Image Format</label>
+                        <select id="img-format">
+                            <option value="png" selected>PNG (lossless)</option>
+                            <option value="jpeg">JPEG (smaller)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="img-scale">Resolution</label>
+                        <select id="img-scale">
+                            <option value="1.0">1x (Fast)</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2.0" selected>2x</option>
+                            <option value="3.0">3x (Sharp)</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="convert-pdf-btn" class="convert-btn" disabled>🔄 Convert to Images</button>
+            </div>
+            
+            <div class="loader" id="pdf-loader">
+                <div class="spinner"></div>
+                <p>Converting PDF to Images...</p>
+            </div>
+
+            <div class="results" id="pdf-results">
+                <h3>Converted Images</h3>
+                <div class="download-all-section">
+                    <button id="download-all-zip" class="download-all-btn">
+                        📦 Download All as ZIP
+                    </button>
+                </div>
+                <div class="preview-grid" id="images-preview"></div>
+                <div class="download-section" id="images-download">
+                    <div class="individual-downloads"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Images to PDF Tab -->
+    <div class="tab-content" id="images-to-pdf" data-title="Images → PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="images-input" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,image/*" multiple />
+                    <label for="images-input" class="file-input-label">
+                        <span>🖼️ Choose Image Files</span>
+                    </label>
+                </div>
+                <div class="pdf-options">
+                    <div>
+                        <label for="pdf-page-size">Page Size</label>
+                        <select id="pdf-page-size">
+                            <option value="a4" selected>A4</option>
+                            <option value="letter">US Letter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="pdf-orientation">Orientation</label>
+                        <select id="pdf-orientation">
+                            <option value="portrait" selected>Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="convert-images-btn" class="convert-btn" disabled>📄 Convert to PDF</button>
+            </div>
+
+            <div class="loader" id="images-loader">
+                <div class="spinner"></div>
+                <p>Converting Images to PDF...</p>
+            </div>
+
+            <div class="selected-images" id="selected-images">
+                <h3>Selected Images</h3>
+                <div class="preview-grid" id="selected-preview"></div>
+            </div>
+
+            <div class="results" id="images-results">
+                <h3>Converted PDF</h3>
+                <div class="download-section" id="pdf-download"></div>
+            </div>
+        </div>
+
+        <!-- Compress PDF Tab -->
+    <div class="tab-content" id="compress-pdf" data-title="Compress PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="compress-input" accept=".pdf,application/pdf" />
+                    <label for="compress-input" class="file-input-label">
+                        <span>📄 Choose PDF to Compress</span>
+                    </label>
+                </div>
+                <div class="compression-options">
+                    <label for="compression-level">Compression Level:</label>
+                    <select id="compression-level">
+                        <option value="0.9">Low Compression (Best Quality)</option>
+                        <option value="0.7" selected>Medium Compression</option>
+                        <option value="0.5">High Compression</option>
+                        <option value="0.3">Maximum Compression</option>
+                    </select>
+                </div>
+                <button id="compress-btn" class="convert-btn" disabled>🗜️ Compress PDF</button>
+            </div>
+            
+            <div class="loader" id="compress-loader">
+                <div class="spinner"></div>
+                <p>Compressing PDF...</p>
+            </div>
+
+            <div class="results" id="compress-results">
+                <h3>Compressed PDF</h3>
+                <div class="compression-stats" id="compression-stats"></div>
+                <div class="download-section" id="compress-download"></div>
+            </div>
+        </div>
+
+        <!-- Merge PDFs Tab -->
+    <div class="tab-content" id="merge-pdf" data-title="Merge PDFs">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="merge-input" accept=".pdf,application/pdf" multiple />
+                    <label for="merge-input" class="file-input-label">
+                        <span>📄 Choose PDF Files to Merge</span>
+                    </label>
+                </div>
+                <button id="merge-btn" class="convert-btn" disabled>🔗 Merge PDFs</button>
+            </div>
+            
+            <div class="loader" id="merge-loader">
+                <div class="spinner"></div>
+                <p>Merging PDFs...</p>
+            </div>
+
+            <div class="selected-pdfs" id="selected-pdfs">
+                <h3>Selected PDFs</h3>
+                <div id="pdf-list"></div>
+            </div>
+
+            <div class="results" id="merge-results">
+                <h3>Merged PDF</h3>
+                <div class="download-section" id="merge-download"></div>
+            </div>
+        </div>
+
+        <!-- Split PDF Tab -->
+    <div class="tab-content" id="split-pdf" data-title="Split PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="split-input" accept=".pdf,application/pdf" />
+                    <label for="split-input" class="file-input-label">
+                        <span>📄 Choose PDF to Split</span>
+                    </label>
+                </div>
+                <div class="split-options">
+                    <label for="split-method">Split Method:</label>
+                    <select id="split-method">
+                        <option value="pages">Split by Pages</option>
+                        <option value="range">Split by Range</option>
+                        <option value="each">Split Each Page</option>
+                    </select>
+                    <div id="split-range" style="display: none;">
+                        <input type="text" id="page-ranges" placeholder="e.g., 1-3, 5-7, 9-10">
+                    </div>
+                </div>
+                <button id="split-btn" class="convert-btn" disabled>✂️ Split PDF</button>
+            </div>
+            
+            <div class="loader" id="split-loader">
+                <div class="spinner"></div>
+                <p>Splitting PDF...</p>
+            </div>
+
+            <div class="results" id="split-results">
+                <h3>Split PDFs</h3>
+                <div class="download-section" id="split-download"></div>
+            </div>
+        </div>
+
+        <!-- Rotate PDF Tab -->
+    <div class="tab-content" id="rotate-pdf" data-title="Rotate PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="rotate-input" accept=".pdf,application/pdf" />
+                    <label for="rotate-input" class="file-input-label">
+                        <span>📄 Choose PDF to Rotate</span>
+                    </label>
+                </div>
+                <div class="rotation-options">
+                    <label for="rotation-angle">Rotation Angle:</label>
+                    <select id="rotation-angle">
+                        <option value="90">90° Clockwise</option>
+                        <option value="180">180°</option>
+                        <option value="270">270° (90° Counter-clockwise)</option>
+                    </select>
+                </div>
+                <button id="rotate-btn" class="convert-btn" disabled>🔄 Rotate PDF</button>
+            </div>
+            
+            <div class="loader" id="rotate-loader">
+                <div class="spinner"></div>
+                <p>Rotating PDF...</p>
+            </div>
+
+            <div class="results" id="rotate-results">
+                <h3>Rotated PDF</h3>
+                <div class="download-section" id="rotate-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF to Word Tab -->
+    <div class="tab-content" id="pdf-to-word" data-title="PDF → Text">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="word-input" accept=".pdf,application/pdf" />
+                    <label for="word-input" class="file-input-label">
+                        <span>📄 Choose PDF to Convert to Text</span>
+                    </label>
+                </div>
+                <button id="convert-word-btn" class="convert-btn" disabled>📝 Extract Text</button>
+            </div>
+            
+            <div class="loader" id="word-loader">
+                <div class="spinner"></div>
+                <p>Extracting Text...</p>
+            </div>
+
+            <div class="results" id="word-results">
+                <h3>Extracted Text</h3>
+                <div class="text-preview" id="extracted-text-preview">
+                    <h4>Text Preview</h4>
+                    <pre></pre>
+                </div>
+                <div class="download-section" id="word-download"></div>
+            </div>
+        </div>
+
+        <!-- Watermark PDF Tab -->
+    <div class="tab-content" id="watermark-pdf" data-title="Watermark PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="watermark-input" accept=".pdf,application/pdf" />
+                    <label for="watermark-input" class="file-input-label">
+                        <span>📄 Choose PDF to Add Watermark</span>
+                    </label>
+                </div>
+                <div class="watermark-options">
+                    <label for="watermark-text">Watermark Text:</label>
+                    <input type="text" id="watermark-text" placeholder="Enter watermark text">
+                    <label for="watermark-opacity">Opacity:</label>
+                    <select id="watermark-opacity">
+                        <option value="0.1">10%</option>
+                        <option value="0.2">20%</option>
+                        <option value="0.3" selected>30%</option>
+                        <option value="0.5">50%</option>
+                    </select>
+                </div>
+                <button id="watermark-btn" class="convert-btn" disabled>💧 Add Watermark</button>
+            </div>
+            
+            <div class="loader" id="watermark-loader">
+                <div class="spinner"></div>
+                <p>Adding Watermark...</p>
+            </div>
+
+            <div class="results" id="watermark-results">
+                <h3>Watermarked PDF</h3>
+                <div class="download-section" id="watermark-download"></div>
+            </div>
+        </div>
+
+        <!-- NEW: Repair PDF Tab (Premium Feature) -->
+    <div class="tab-content" id="repair-pdf" data-title="Repair PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="repair-input" accept=".pdf,application/pdf" />
+                    <label for="repair-input" class="file-input-label">
+                        <span>📄 Choose Corrupted PDF to Repair</span>
+                    </label>
+                </div>
+                <div class="repair-options">
+                    <label for="repair-level">Repair Level:</label>
+                    <select id="repair-level">
+                        <option value="basic">Basic Repair</option>
+                        <option value="advanced" selected>Advanced Repair</option>
+                        <option value="deep">Deep Recovery</option>
+                    </select>
+                </div>
+                <button id="repair-btn" class="convert-btn" disabled>🔧 Repair PDF</button>
+            </div>
+            
+            <div class="loader" id="repair-loader">
+                <div class="spinner"></div>
+                <p>Repairing PDF...</p>
+            </div>
+
+            <div class="results" id="repair-results">
+                <h3>Repaired PDF</h3>
+                <div class="repair-stats" id="repair-stats"></div>
+                <div class="download-section" id="repair-download"></div>
+            </div>
+        </div>
+
+        <!-- NEW: Edit PDF Metadata Tab (Premium Feature) -->
+    <div class="tab-content" id="pdf-metadata" data-title="Edit PDF Metadata">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="metadata-input" accept=".pdf,application/pdf" />
+                    <label for="metadata-input" class="file-input-label">
+                        <span>📄 Choose PDF to Edit Metadata</span>
+                    </label>
+                </div>
+                <div id="metadata-form-container"></div>
+                <button id="metadata-btn" class="convert-btn" disabled>📝 Update Metadata</button>
+            </div>
+            
+            <div class="loader" id="metadata-loader">
+                <div class="spinner"></div>
+                <p>Updating Metadata...</p>
+            </div>
+
+            <div class="results" id="metadata-results">
+                <h3>PDF with Updated Metadata</h3>
+                <div class="download-section" id="metadata-download"></div>
+            </div>
+        </div>
+
+        <!-- NEW: Extract Images Tab (Premium Feature) -->
+    <div class="tab-content" id="extract-images" data-title="Extract Images">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="extract-input" accept=".pdf,application/pdf" />
+                    <label for="extract-input" class="file-input-label">
+                        <span>📄 Choose PDF to Extract Images</span>
+                    </label>
+                </div>
+                <div class="extract-options">
+                    <label for="image-quality">Image Quality:</label>
+                    <select id="extract-quality">
+                        <option value="low">Low (Faster)</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <label for="extract-format">Format:</label>
+                    <select id="extract-format">
+                        <option value="png" selected>PNG</option>
+                        <option value="jpeg">JPEG</option>
+                    </select>
+                </div>
+                <button id="extract-btn" class="convert-btn" disabled>🖼️ Extract Images</button>
+            </div>
+            
+            <div class="loader" id="extract-loader">
+                <div class="spinner"></div>
+                <p>Extracting Images...</p>
+            </div>
+
+            <div class="results" id="extract-results">
+                <h3>Extracted Images</h3>
+                <div class="download-all-section">
+                    <button id="download-extracted-zip" class="download-all-btn">
+                        📦 Download All as ZIP
+                    </button>
+                </div>
+                <div class="preview-grid" id="extracted-preview"></div>
+                <div class="download-section" id="extract-download">
+                    <div class="individual-downloads"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Crop PDF Tab -->
+    <div class="tab-content" id="crop-pdf" data-title="Crop PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="crop-input" accept=".pdf,application/pdf" />
+                    <label for="crop-input" class="file-input-label">
+                        <span>📄 Choose PDF to Crop</span>
+                    </label>
+                </div>
+                <div class="crop-options">
+                    <div class="crop-margins">
+                        <label>Margins (mm):</label>
+                        <div class="margin-inputs">
+                            <div>
+                                <label for="crop-top">Top:</label>
+                                <input type="number" id="crop-top" value="10" min="0">
+                            </div>
+                            <div>
+                                <label for="crop-right">Right:</label>
+                                <input type="number" id="crop-right" value="10" min="0">
+                            </div>
+                            <div>
+                                <label for="crop-bottom">Bottom:</label>
+                                <input type="number" id="crop-bottom" value="10" min="0">
+                            </div>
+                            <div>
+                                <label for="crop-left">Left:</label>
+                                <input type="number" id="crop-left" value="10" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crop-checkbox">
+                        <input type="checkbox" id="crop-all-pages" checked>
+                        <label for="crop-all-pages">Apply to all pages</label>
+                    </div>
+                </div>
+                <button id="crop-btn" class="convert-btn" disabled>✂️ Crop PDF</button>
+            </div>
+            <div class="loader" id="crop-loader">
+                <div class="spinner"></div>
+                <p>Cropping PDF...</p>
+            </div>
+            <div class="results" id="crop-results">
+                <h3>Cropped PDF</h3>
+                <div class="download-section" id="crop-download"></div>
+            </div>
+        </div>
+
+        <!-- NEW: Optimize PDF Size Tab (Premium Feature) -->
+    <div class="tab-content" id="optimize-pdf" data-title="Optimize PDF">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="optimize-input" accept=".pdf,application/pdf" />
+                    <label for="optimize-input" class="file-input-label">
+                        <span>📄 Choose PDF to Optimize</span>
+                    </label>
+                </div>
+                <div class="optimize-options">
+                    <label for="optimize-level">Optimization Level:</label>
+                    <select id="optimize-level">
+                        <option value="light">Light (Best Quality)</option>
+                        <option value="medium" selected>Medium (Balanced)</option>
+                        <option value="aggressive">Aggressive (Smallest Size)</option>
+                    </select>
+                    <div class="optimize-checkboxes">
+                        <div>
+                            <input type="checkbox" id="optimize-images" checked>
+                            <label for="optimize-images">Optimize Images</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="optimize-fonts" checked>
+                            <label for="optimize-fonts">Subset Fonts</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="remove-metadata">
+                            <label for="remove-metadata">Remove Metadata</label>
+                        </div>
+                    </div>
+                </div>
+                <button id="optimize-btn" class="convert-btn" disabled>⚡ Optimize PDF</button>
+            </div>
+            
+            <div class="loader" id="optimize-loader">
+                <div class="spinner"></div>
+                <p>Optimizing PDF...</p>
+            </div>
+
+            <div class="results" id="optimize-results">
+                <h3>Optimized PDF</h3>
+                <div class="optimization-stats" id="optimization-stats"></div>
+                <div class="download-section" id="optimize-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF Table Extractor Tab -->
+    <div class="tab-content" id="pdf-table-extractor" data-title="PDF → Table">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="table-input" accept=".pdf,application/pdf" />
+                    <label for="table-input" class="file-input-label">
+                        <span>📄 Choose PDF to Extract Table</span>
+                    </label>
+                </div>
+                <button id="extract-table-btn" class="convert-btn" disabled>📊 Extract Table</button>
+            </div>
+            <div class="loader" id="table-loader">
+                <div class="spinner"></div>
+                <p>Extracting Table...</p>
+            </div>
+            <div class="results" id="table-results">
+                <h3>Extracted Table</h3>
+                <div class="download-section" id="table-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF to PPTX Tab -->
+    <div class="tab-content" id="pdf-to-pptx" data-title="PDF → PPTX">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="pptx-input" accept=".pdf,application/pdf" />
+                    <label for="pptx-input" class="file-input-label">
+                        <span>📄 Choose PDF to Convert to PPTX</span>
+                    </label>
+                </div>
+                <button id="convert-pptx-btn" class="convert-btn" disabled>📑 Convert to PPTX</button>
+            </div>
+            <div class="loader" id="pptx-loader">
+                <div class="spinner"></div>
+                <p>Converting PDF to PowerPoint...</p>
+            </div>
+            <div class="results" id="pptx-results">
+                <h3>Converted PowerPoint</h3>
+                <div class="download-section" id="pptx-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF Redactor Tab -->
+    <div class="tab-content" id="pdf-redactor" data-title="PDF Redactor">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="redact-input" accept=".pdf,application/pdf" />
+                    <label for="redact-input" class="file-input-label">
+                        <span>📄 Choose PDF to Redact</span>
+                    </label>
+                </div>
+                <div class="redact-preview-section">
+                    <canvas id="redact-canvas" width="600" height="800" style="border:1px solid #ccc; background:#fff; max-width:100%;"></canvas>
+                    <div class="redact-instructions">
+                        <p>Draw rectangles on the preview to blackout (redact) areas. Click and drag to draw. You can draw multiple rectangles.</p>
+                    </div>
+                </div>
+                <button id="apply-redact-btn" class="convert-btn" disabled>🖤 Apply Redaction & Download</button>
+            </div>
+            <div class="loader" id="redact-loader">
+                <div class="spinner"></div>
+                <p>Applying Redaction...</p>
+            </div>
+            <div class="results" id="redact-results">
+                <h3>Redacted PDF</h3>
+                <div class="download-section" id="redact-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF Compare Tab -->
+    <div class="tab-content" id="pdf-compare" data-title="PDF Compare">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="compare-input-1" accept=".pdf,application/pdf" />
+                    <label for="compare-input-1" class="file-input-label">
+                        <span>📄 Choose First PDF</span>
+                    </label>
+                </div>
+                <div class="file-input-wrapper">
+                    <input type="file" id="compare-input-2" accept=".pdf,application/pdf" />
+                    <label for="compare-input-2" class="file-input-label">
+                        <span>📄 Choose Second PDF</span>
+                    </label>
+                </div>
+                <button id="compare-btn" class="convert-btn" disabled>🔍 Compare PDFs</button>
+            </div>
+            <div class="loader" id="compare-loader">
+                <div class="spinner"></div>
+                <p>Comparing PDFs...</p>
+            </div>
+            <div class="results" id="compare-results">
+                <h3>PDF Differences</h3>
+                <div class="text-preview" id="compare-diff-report"></div>
+                <div class="download-section" id="compare-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF to Audio Tab -->
+    <div class="tab-content" id="pdf-to-audio" data-title="PDF → Audio">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="audio-input" accept=".pdf,application/pdf" />
+                    <label for="audio-input" class="file-input-label">
+                        <span>📄 Choose PDF to Convert to Audio</span>
+                    </label>
+                </div>
+                <button id="convert-audio-btn" class="convert-btn" disabled>🔊 Convert to Audio</button>
+            </div>
+            <div class="loader" id="audio-loader">
+                <div class="spinner"></div>
+                <p>Converting PDF to Audio...</p>
+            </div>
+            <div class="results" id="audio-results">
+                <h3>PDF to Audio</h3>
+                <audio id="audio-player" controls style="width:100%; display:none;"></audio>
+                <div class="download-section" id="audio-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF Form Filler Tab -->
+    <div class="tab-content" id="pdf-form-filler" data-title="PDF Form Filler">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="formfill-input" accept=".pdf,application/pdf" />
+                    <label for="formfill-input" class="file-input-label">
+                        <span>📄 Choose PDF Form to Fill</span>
+                    </label>
+                </div>
+                <div id="formfill-fields"></div>
+                <button id="fill-form-btn" class="convert-btn" disabled>📝 Fill & Download PDF</button>
+            </div>
+            <div class="loader" id="formfill-loader">
+                <div class="spinner"></div>
+                <p>Filling PDF Form...</p>
+            </div>
+            <div class="results" id="formfill-results">
+                <h3>Filled PDF</h3>
+                <div class="download-section" id="formfill-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF Page Numbering Tab -->
+    <div class="tab-content" id="pdf-page-numbering" data-title="PDF Page Numbering">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="pagenum-input" accept=".pdf,application/pdf" />
+                    <label for="pagenum-input" class="file-input-label">
+                        <span>📄 Choose PDF to Add Page Numbers</span>
+                    </label>
+                </div>
+                <div class="pagenum-options">
+                    <label for="pagenum-position">Position:</label>
+                    <select id="pagenum-position">
+                        <option value="bottom">Bottom</option>
+                        <option value="top">Top</option>
+                    </select>
+                    <label for="pagenum-align">Alignment:</label>
+                    <select id="pagenum-align">
+                        <option value="center">Center</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                    <label for="pagenum-size">Font Size:</label>
+                    <input type="number" id="pagenum-size" value="14" min="6" max="48" style="width:60px;">
+                    <label for="pagenum-start">Start Number:</label>
+                    <input type="number" id="pagenum-start" value="1" min="1" style="width:60px;">
+                </div>
+                <button id="add-pagenum-btn" class="convert-btn" disabled>🔢 Add Page Numbers</button>
+            </div>
+            <div class="loader" id="pagenum-loader">
+                <div class="spinner"></div>
+                <p>Adding Page Numbers...</p>
+            </div>
+            <div class="results" id="pagenum-results">
+                <h3>PDF with Page Numbers</h3>
+                <div class="download-section" id="pagenum-download"></div>
+            </div>
+        </div>
+
+        <!-- PDF to HTML Tab -->
+    <div class="tab-content" id="pdf-to-html" data-title="PDF → HTML">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="html-input" accept=".pdf,application/pdf" />
+                    <label for="html-input" class="file-input-label">
+                        <span>📄 Choose PDF to Convert to HTML</span>
+                    </label>
+                </div>
+                <button id="convert-html-btn" class="convert-btn" disabled>🌐 Convert to HTML</button>
+            </div>
+            <div class="loader" id="html-loader">
+                <div class="spinner"></div>
+                <p>Converting PDF to HTML...</p>
+            </div>
+            <div class="results" id="html-results">
+                <h3>PDF to HTML</h3>
+                <div class="download-section" id="html-download"></div>
+                <div class="text-preview" id="html-preview"></div>
+            </div>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="pdfService.js"></script>
+    <script src="viewModel.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
