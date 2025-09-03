@@ -653,7 +653,33 @@ header { background: linear-gradient(140deg, var(--brand-1), var(--brand-2)); }
 .navbar { display:flex; align-items:center; justify-content:space-between; margin: 0 0 10px 0; }
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight: 800; letter-spacing:.3px; }
 .brand .logo { width:34px; height:34px; border-radius:10px; background: #fff; color: var(--brand-1); display:inline-flex; align-items:center; justify-content:center; box-shadow: inset 0 0 0 2px rgba(255,255,255,.45), 0 6px 16px rgba(0,0,0,.15); }
-.theme-toggle { border:0; padding:8px 12px; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.15)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); display:inline-flex; align-items:center; gap:8px; font-weight:700; }
+.theme-toggle { 
+    border: 0; 
+    padding: 8px 12px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    color: #fff; 
+    background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.15)); 
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px; 
+    font-weight: 700;
+    transition: all 0.2s ease;
+    z-index: 10;
+    position: relative;
+}
+
+.theme-toggle:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,.35), rgba(255,255,255,.25));
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), 0 4px 12px rgba(0,0,0,.15);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+    background: linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.1));
+}
 
 /* Options panels harmonized color */
 .quality-selector, .pdf-options, .compression-options, .split-options, .rotation-options, .watermark-options, .extract-options, .optimize-options, .pagenum-options, .crop-options {

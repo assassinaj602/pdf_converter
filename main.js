@@ -1485,15 +1485,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle
     const applyTheme = (t) => {
         document.body.classList.toggle('theme-dark', t === 'dark');
+        console.log('Theme applied:', t, 'Body classes:', document.body.className);
+        
+        // Update button text
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+            toggleBtn.innerHTML = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+        }
     };
     const saved = localStorage.getItem('ppc-theme') || 'light';
     applyTheme(saved);
     const toggleBtn = document.getElementById('theme-toggle');
+    console.log('Theme toggle button found:', !!toggleBtn);
     if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Theme toggle clicked');
             const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+            console.log('Switching to theme:', newTheme);
             localStorage.setItem('ppc-theme', newTheme);
             applyTheme(newTheme);
         });
+        
+        // Add visual feedback
+        toggleBtn.addEventListener('mousedown', () => {
+            toggleBtn.style.transform = 'scale(0.95)';
+        });
+        toggleBtn.addEventListener('mouseup', () => {
+            toggleBtn.style.transform = 'scale(1)';
+        });
+        toggleBtn.addEventListener('mouseleave', () => {
+            toggleBtn.style.transform = 'scale(1)';
+        });
+    } else {
+        console.error('Theme toggle button not found!');
     }
 });
